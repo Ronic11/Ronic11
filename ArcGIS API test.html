@@ -1,0 +1,122 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>ArcGIS API for JavaScript class1</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      /*页眉样式*/
+      header {
+            background-color:rgb(209, 241, 128);
+            color: rgba(0, 0, 0, 0.908);
+            padding:0;
+            text-align: center;
+            width: 100%;
+            float: left;
+            margin: auto;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.29/"></script>
+
+    <script>
+      require(["esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/ScaleBar",
+        "esri/widgets/Legend", "esri/widgets/Search", "esri/widgets/Home", "esri/widgets/LayerList",
+        "esri/widgets/Compass", "esri/widgets/Locate", "esri/widgets/BasemapGallery"
+        ],
+      (Map, MapView, FeatureLayer, ScaleBar, Legend, Search, Home, LayerList, Compass, Locate, BasemapGallery) => {
+        //添加要素图层
+        const flayer = new FeatureLayer({
+            url: "https://www.geosceneonline.cn/server/rest/services/Hosted/福建省市/FeatureServer"
+        });
+        //添加底图
+        const map = new Map({
+          basemap: "streets",
+          layers: [flayer]
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 3,
+          center: [120, 33] // longitude, latitude
+        });
+        //添加搜索框
+        var search = new Search({
+            view: view
+        });
+        view.ui.add(search, {
+            position: "top-left",
+            index: 2
+        });
+        //添加Home控件
+        var home = new Home({
+            view: view
+        });
+        view.ui.add(home, "top-left");
+        //添加比例尺控件
+        let scalebar = new ScaleBar({
+            view: view,
+            style: "ruler",
+            unit: "dual"
+        });
+        view.ui.add(scalebar, {
+            position: "bottom-left"
+        });
+        //添加图例
+        var legend = new Legend({
+            view: view,
+            layerInfos: [
+                {
+                    layer: flayer,
+                    //title: "图例"
+                }
+            ]
+        });
+        view.ui.add(legend, {
+            position: "bottom-right"
+        });
+        //添加图层列表
+        var llist = new LayerList({
+            view: view
+        });
+        view.ui.add(llist, "top-right");
+        //添加指北针
+        var compass = new Compass({
+            view: view
+        });
+        view.ui.add(compass, "top-right");
+        //添加查看我的位置
+        var mylocate = new Locate({
+            view: view
+        });
+        view.ui.add(mylocate, "top-left");
+        //添加底图库
+        var gallery = new BasemapGallery({
+          view: view,
+          source:{
+				  portal:{
+					  url: "https://www.arcgis.com",
+            useVectorBasemaps: true //加载切片底图
+				  }}
+        });
+        view.ui.add(gallery, "top-right");
+      });
+    </script>
+  </head>
+
+  <body>
+    <header>
+      <a>首页</a>
+    </header>
+    <div id="viewDiv"></div>
+  </body>
+</html>
